@@ -49,6 +49,7 @@ async function installPython(workingDirectory: string) {
     env: {
       ...process.env,
       ...(IS_LINUX && {LD_LIBRARY_PATH: path.join(workingDirectory, 'lib')})
+      ...(IS_MAC && {LD_LIBRARY_PATH: path.join('$(brew --prefix)', 'lib')})
     },
     silent: true,
     listeners: {
