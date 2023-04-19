@@ -3,7 +3,7 @@ import * as core from '@actions/core';
 import * as tc from '@actions/tool-cache';
 import * as exec from '@actions/exec';
 import {ExecOptions} from '@actions/exec/lib/interfaces';
-import {IS_WINDOWS, IS_LINUX} from './utils';
+import {IS_WINDOWS, IS_LINUX, IS_MAC, getMacOSBrewPath} from './utils';
 
 const TOKEN = core.getInput('token');
 const AUTH = !TOKEN ? undefined : `token ${TOKEN}`;
@@ -44,11 +44,13 @@ export function getManifest(): Promise<tc.IToolRelease[]> {
 }
 
 async function installPython(workingDirectory: string) {
+  const brewPath = await getMacOSBrewPath();
   const options: ExecOptions = {
     cwd: workingDirectory,
     env: {
       ...process.env,
       ...(IS_LINUX && {LD_LIBRARY_PATH: path.join(workingDirectory, 'lib')})
+      ...(IS_MAC && {LD_LIBRARY_PATH: path.join(brewPath, 'lib')})
     },
     silent: true,
     listeners: {
