@@ -152,6 +152,16 @@ async function getMacOSInfo() {
   return {osName: 'macOS', osVersion: macOSVersion};
 }
 
+export async function getMacOSBrewPath() {
+  const {stdout} = await exec.getExecOutput('brew', ['--prefix'], {
+    silent: true
+  });
+
+  const brewPath = stdout.trim();
+
+  return {brewPath: brewPath};
+}
+
 export async function getLinuxInfo() {
   const {stdout} = await exec.getExecOutput('lsb_release', ['-i', '-r', '-s'], {
     silent: true
